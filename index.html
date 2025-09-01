@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A-16 BMI Compatibility Scanner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --android-green: #4CAF50;
+            --android-red: #F44336;
+            --dark-bg: #1a1a1a;
+            --light-text: #E0E0E0;
+            --border-color: #333;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        .container {
+            border: 2px solid var(--border-color);
+            padding: 2rem;
+            background-color: #212121;
+            box-shadow: 0 0 15px rgba(0, 255, 135, 0.2);
+            width: 90%;
+            max-width: 800px;
+        }
+
+        h1 {
+            color: var(--android-green);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--android-green);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .gender-symbols {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .male-symbol {
+            color: #2196F3;
+        }
+
+        .female-symbol {
+            color: #E91E63;
+        }
+
+        .input-sections {
+            display: flex;
+            justify-content: space-around;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .partner-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        h2 {
+            color: var(--light-text);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            color: var(--android-green);
+            font-family: 'Orbitron', sans-serif;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--android-green);
+        }
+
+        button {
+            padding: 15px 30px;
+            background-color: var(--android-green);
+            color: var(--dark-bg);
+            border: none;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #66BB6A;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .result-container {
+            margin-top: 2rem;
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .bmi-scores {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        #result-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            transition: all 0.5s ease;
+        }
+        
+        .matched {
+            border: 5px solid var(--android-green);
+            color: var(--android-green);
+            box-shadow: 0 0 20px var(--android-green);
+        }
+        
+        .no-match {
+            border: 5px solid var(--android-red);
+            color: var(--android-red);
+            box-shadow: 0 0 20px var(--android-red);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>BMI Compatibility Scanner</h1>
+        <div class="gender-symbols">
+            <span class="male-symbol">♂</span>
+            <span class="female-symbol">♀</span>
+        </div>
+
+        <div class="input-sections">
+            <div class="partner-section">
+                <h2>Male Partner</h2>
+                <div class="input-group">
+                    <label for="male-height">Height (cm)</label>
+                    <input type="number" id="male-height" placeholder="e.g., 180">
+                </div>
+                <div class="input-group">
+                    <label for="male-weight">Weight (kg)</label>
+                    <input type="number" id="male-weight" placeholder="e.g., 75">
+                </div>
+            </div>
+
+            <div class="partner-section">
+                <h2>Female Partner</h2>
+                <div class="input-group">
+                    <label for="female-height">Height (cm)</label>
+                    <input type="number" id="female-height" placeholder="e.g., 165">
+                </div>
+                <div class="input-group">
+                    <label for="female-weight">Weight (kg)</label>
+                    <input type="number" id="female-weight" placeholder="e.g., 60">
+                </div>
+            </div>
+        </div>
+
+        <button onclick="calculateMatch()">Analyze Compatibility</button>
+
+        <div id="result-container" class="result-container">
+            <div class="bmi-scores">
+                <p id="male-bmi-result"></p>
+                <p id="female-bmi-result"></p>
+            </div>
+            <div id="result-circle"></div>
+        </div>
+    </div>
+
+    <script>
+        function getBmiCategory(bmi) {
+            if (bmi < 18.5) return 'Underweight';
+            if (bmi >= 18.5 && bmi <= 24.9) return 'Normal';
+            if (bmi >= 25 && bmi <= 29.9) return 'Overweight';
+            if (bmi >= 30) return 'Obese';
+            return 'Unknown';
+        }
+
+        function calculateMatch() {
+            // Get values from input fields
+            const maleHeight = parseFloat(document.getElementById('male-height').value);
+            const maleWeight = parseFloat(document.getElementById('male-weight').value);
+            const femaleHeight = parseFloat(document.getElementById('female-height').value);
+            const femaleWeight = parseFloat(document.getElementById('female-weight').value);
+
+            // Validate input
+            if (!maleHeight || !maleWeight || !femaleHeight || !femaleWeight || maleHeight <= 0 || maleWeight <= 0 || femaleHeight <= 0 || femaleWeight <= 0) {
+                alert('Please enter valid height and weight for both partners.');
+                return;
+            }
+
+            // Calculate BMI: weight (kg) / [height (m)]^2
+            const maleBmi = maleWeight / ((maleHeight / 100) ** 2);
+            const femaleBmi = femaleWeight / ((femaleHeight / 100) ** 2);
+
+            // Get BMI categories
+            const maleCategory = getBmiCategory(maleBmi);
+            const femaleCategory = getBmiCategory(femaleBmi);
+
+            // Get result elements
+            const resultContainer = document.getElementById('result-container');
+            const resultCircle = document.getElementById('result-circle');
+            const maleBmiResult = document.getElementById('male-bmi-result');
+            const femaleBmiResult = document.getElementById('female-bmi-result');
+            
+            // Display individual BMI scores
+            maleBmiResult.textContent = `Male BMI: ${maleBmi.toFixed(1)} (${maleCategory})`;
+            femaleBmiResult.textContent = `Female BMI: ${femaleBmi.toFixed(1)} (${femaleCategory})`;
+
+            // Check for a match and update the UI
+            resultCircle.classList.remove('matched', 'no-match'); // Reset classes
+            
+            if (maleCategory === femaleCategory) {
+                resultCircle.textContent = 'MATCHED';
+                resultCircle.classList.add('matched');
+            } else {
+                resultCircle.textContent = 'NO MATCH';
+                resultCircle.classList.add('no-match');
+            }
+
+            // Show the result container
+            resultContainer.style.display = 'flex';
+        }
+    </script>
+
+</body>
+</html>
